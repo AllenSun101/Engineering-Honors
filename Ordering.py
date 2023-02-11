@@ -9,3 +9,5 @@ testingSheet = sheets[('(12.11.19) Study pectacular', 'a')]
 
 top_majors = agg.getCount(testingSheet, "Major")
 top_year = agg.getCount(testingSheet, "Classification")
+
+print(top_year)
