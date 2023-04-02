@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import glob
+import data_management
 
 
 # Streamlit app reruns every time a selectbox option is changed
@@ -22,7 +23,6 @@ def app():
     majors = ["All Majors"]
     class_years = ["All Classes"]
     
-    # Get Excel files, extract semester/event information and add to list
     add_semesters_events(semesters, events)
 
     # Start of Content
@@ -45,12 +45,14 @@ def app():
     elif st.session_state.Event != "All Events":
         if st.session_state.PrevAllSemesters:
             set_semester_from_event()
+            st.session_state.Major = "All Majors"
         else:
             st.session_state.Event = "All Events"
     if st.session_state.Semester == "All Semesters" and st.session_state.Event == "All Events":
         st.session_state.PrevAllSemesters = True
     else:
         st.session_state.PrevAllSemesters = False
+    
    
     # SEMESTER SELECTBOX
     selected_semester = col1.selectbox(label="Filter by Semester", options=semesters, key="Semester")

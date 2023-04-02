@@ -37,14 +37,6 @@ class MultiPage:
             format_func=lambda page: page['title']
         )
 
-        # Disappear when the sidebar changes
-        appears = True
-        if appears:
-            st.sidebar.write("Semester: Get Value")
-            st.sidebar.write("Event: Get Value")
-            st.sidebar.write("Major: Get Value")
-            st.sidebar.write("Class: Get Value")
-
 
         # run the app function 
         page['function'](*page["args"], **page["kwargs"])

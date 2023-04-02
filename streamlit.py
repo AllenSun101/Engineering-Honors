@@ -5,6 +5,8 @@ import streamlit as st
 from multipage import MultiPage
 from dashboard1 import app as dasbhoard1_app
 from dashboard2 import app as dashboard2_app
+from dashboard1_new import app as dashboard1_new_app
+from manage_data_dashboard import app as manage_data
 
 # Create an instance of the app 
 app = MultiPage()
@@ -13,6 +15,9 @@ app = MultiPage()
 st.set_page_config(layout="wide")
 app.add_page("Main", dasbhoard1_app)
 app.add_page("Alternative", dashboard2_app)
+app.add_page("New Main", dashboard1_new_app)
+app.add_page("Manage Data", manage_data)
+# add page for data insertion/manipulation
 
 # The main app
 app.run()
