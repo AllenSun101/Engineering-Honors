@@ -1,5 +1,6 @@
 import sqlite3
 import pandas as pd
+import regex as re 
 
 
 # Initially create SQL Table, feed spreadsheets into them
@@ -13,6 +14,9 @@ con.execute('''CREATE TABLE IF NOT EXISTS attendance_data
             major VARCHAR(50) NOT NULL,
             classification VARCHAR(50) NOT NULL, 
             event VARCHAR(50) NOT NULL,
+            undatedEvent VARCHAR(50) NOT NULL,
+            month VARCHAR(50) NOT NULL,
+            year VARCHAR(50) NOT NULL,
             attended INTEGER NOT NULL)''')
 
 con.execute('''CREATE TABLE IF NOT EXISTS registration_data
@@ -21,6 +25,9 @@ con.execute('''CREATE TABLE IF NOT EXISTS registration_data
             major VARCHAR(50) NOT NULL,
             classification VARCHAR(50) NOT NULL,
             event VARCHAR(50) NOT NULL,
+            undatedEvent VARCHAR(50) NOT NULL,
+            month VARCHAR(50) NOT NULL,
+            year VARCHAR(50) NOT NULL,
             registered INTEGER NOT NULL)''')
 
 con.close()
@@ -43,13 +50,18 @@ def add_data(file_name, semester):
         attended = event_sheet[['Attended', 'Major', 'Classification']]
         attended = attended.dropna()
 
+        modified_event = extract_date_and_remove_from_column(event)
+        month = modified_event[0]
+        year = modified_event[1]
+        undated_event = modified_event[2]
+
         for i in range(len(attended)):
             try:
                 major = attended['Major'][i]
                 classification = get_class_year(semester, attended['Classification'][i])
                 attend_status = int(attended['Attended'][i])
-                cur.execute("INSERT INTO attendance_data (semester, major, classification, attended, event) VALUES (?, ?, ?, ?, ?)"
-                         , (semester, major, classification, attend_status, event))
+                cur.execute("INSERT INTO attendance_data (semester, major, classification, attended, event, undatedEvent, month, year) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+                         , (semester, major, classification, attend_status, event, undated_event, month, year))
             except:
                 print("Attend Error")
                 continue
@@ -65,8 +77,8 @@ def add_data(file_name, semester):
                 major = registered['Major.1'][i]
                 classification = get_class_year(semester, registered['Classification.1'][i])
                 register_status = int(registered['Registered'][i])
-                cur.execute("INSERT INTO registration_data (semester, major, classification, registered, event) VALUES (?, ?, ?, ?, ?)"
-                         , (semester, major, classification, register_status, event))
+                cur.execute("INSERT INTO registration_data (semester, major, classification, registered, event, undatedEvent, month, year) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+                         , (semester, major, classification, register_status, event, undated_event, month, year))
             except:
                 print("Register Error")
                 continue
@@ -169,7 +181,10 @@ def get_data(semester, event, major, classification, data_type):
         return results
 
     # Otherwise, assign columns
-    results.columns = ['id', 'semester', 'major', 'classification', 'event', 'attended']
+    if data_type == "Attendance":
+        results.columns = ['id', 'semester', 'major', 'classification', 'event', 'undated_event', 'month', 'year', 'attended']
+    elif data_type == "Registration":
+        results.columns = ['id', 'semester', 'major', 'classification', 'event', 'undated_event', 'month', 'year', 'registered']
     return results
 
 
@@ -199,3 +214,23 @@ def find_semester_from_event(event, data_type):
     return semester[0]
 
 
+def extract_date_and_remove_from_column(event):
+    # Define a regular expression to match the date information in the text column
+    pattern = r'\((\d{1,2})[./](\d{1,2}|[.&]\d{1,2})[./](\d{2}|\d{4})\)'
+    
+    # Define a function to extract the date information and remove it from the string
+    def extract_date_and_remove(string):
+        match = re.search(pattern, string)
+        if match:
+            month = int(match.group(1))
+            year = int(match.group(3))
+            text = string[:match.start()] + string[match.end():]
+            return (month, year, text)
+        else:
+            return None
+    
+    # Apply the extract_date_and_remove function to the text column to create three new columns with the extracted date information and modified text
+    modified_event_data = extract_date_and_remove(event)
+    
+    return modified_event_data
+    
