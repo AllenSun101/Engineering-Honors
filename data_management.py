@@ -60,6 +60,8 @@ def add_data(file_name, semester):
                 major = attended['Major'][i]
                 classification = get_class_year(semester, attended['Classification'][i])
                 attend_status = int(attended['Attended'][i])
+
+                # Add into database
                 cur.execute("INSERT INTO attendance_data (semester, major, classification, attended, event, undatedEvent, month, year) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
                          , (semester, major, classification, attend_status, event, undated_event, month, year))
             except:
@@ -77,11 +79,14 @@ def add_data(file_name, semester):
                 major = registered['Major.1'][i]
                 classification = get_class_year(semester, registered['Classification.1'][i])
                 register_status = int(registered['Registered'][i])
+
+                # Add into database
                 cur.execute("INSERT INTO registration_data (semester, major, classification, registered, event, undatedEvent, month, year) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
                          , (semester, major, classification, register_status, event, undated_event, month, year))
             except:
                 print("Register Error")
                 continue
+
     con.commit()
     con.close()
 
@@ -229,7 +234,7 @@ def extract_date_and_remove_from_column(event):
         else:
             return None
     
-    # Apply the extract_date_and_remove function to the text column to create three new columns with the extracted date information and modified text
+    # Apply the extract_date_and_remove function to the string to create a tuple with the extracted date information and modified text
     modified_event_data = extract_date_and_remove(event)
     
     return modified_event_data

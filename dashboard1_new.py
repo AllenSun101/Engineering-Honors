@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import data_management
 
-# Need to fix initialize semester bug
+# Need to fix initialize bug
 st.session_state.Semester = "All Semesters"
 st.session_state.Event = "All Events"
 st.session_state.Major = "All Majors"
