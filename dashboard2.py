@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import data_management
+import plot_revised
+import plot_turnout
 
 
 def app():
@@ -87,6 +89,8 @@ def app():
     selected_year = col4.selectbox(label="Filter by Class", options=class_years, key="Class")
     print(st.session_state.Class)
 
+    x_axis = col1.selectbox(label="X Axis", options=['Semester', 'Event', 'Major', 'Class'], key="X_axis")
+
 
     # Query database based on session states
     attendance_data = data_management.get_data(st.session_state.Semester, st.session_state.Event, st.session_state.Major, st.session_state.Class, "Attendance")
@@ -98,6 +102,12 @@ def app():
     #------------PLOT DATA HERE------------------
     # WATCH AND HANDLE EMPTY DATASET CASES!!!!!
 
-    
+    x_lab = x_axis
+    title1 = "Attendance and Registration by " + x_axis
+    title2 = "Turnout Percentage by " + x_axis
+    att_freq_dict_old = plot_revised.get_frequency(attendance_data, x_axis)
+    reg_freq_dict_old = plot_revised.get_frequency(registration_data, x_axis)
 
+
+    plot_turnout.plot(att_freq_dict_old, reg_freq_dict_old, x_axis, x_lab, title1, title2)
 

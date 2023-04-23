@@ -139,6 +139,7 @@ def plot(att_freq_dict_old, reg_freq_dict_old, x_axis, x_lab, title1, title2):
     axs[1].set_xlabel(x_lab)
     axs[1].set_ylabel('Turnout Percentage')
     axs[1].set_title(title2)
+    axs[1].set_xticks(list(turnout_pct.keys()), list(turnout_pct.keys()), rotation=45)
     #plt.xticks(rotation=45)
     
     
