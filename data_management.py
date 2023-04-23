@@ -8,7 +8,7 @@ con = sqlite3.connect('eh_data.db')
 
 
 # Create tables if not already created
-con.execute('''CREATE TABLE IF NOT EXISTS attendance_data
+con.execute('''CREATE TABLE IF NOT EXISTS registration_data
             (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
             semester VARCHAR(50) NOT NULL,
             major VARCHAR(50) NOT NULL,
@@ -21,7 +21,7 @@ con.execute('''CREATE TABLE IF NOT EXISTS attendance_data
             year VARCHAR(50) NOT NULL,
             attended INTEGER NOT NULL)''')
 
-con.execute('''CREATE TABLE IF NOT EXISTS registration_data
+con.execute('''CREATE TABLE IF NOT EXISTS attendance_data
             (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
             semester VARCHAR(50) NOT NULL,
             major VARCHAR(50) NOT NULL,
@@ -54,10 +54,6 @@ def add_data(file_name, semester, event_categories):
         # Get pandas dataframe for event sheet
         event_sheet = pd.read_excel(file_path, sheet_name=event)
 
-        # Process attendance data and insert to database
-        attended = event_sheet[['Attended', 'Major', 'Classification']]
-        attended = attended.dropna()
-
         # Handle event name and date
         modified_event = extract_date_and_remove_from_column(event)
         month = modified_event[0]
@@ -68,40 +64,45 @@ def add_data(file_name, semester, event_categories):
         event_category = event_categories[event_category_counter]
         event_category_counter += 1
 
-        # Cycle through entries for attendance data
-        for i in range(len(attended)):
-            try:
-                major = attended['Major'][i]
-                classification = get_class_year(semester, attended['Classification'][i])
-                classification_category = attended['Classification'][i][0:2]
-                attend_status = int(attended['Attended'][i])
-
-                # Insert into database
-                cur.execute("INSERT INTO attendance_data (semester, major, classificationYear, classificationCategory, attended, event, eventCategory, undatedEvent, month, year) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-                         , (semester, major, classification, classification_category, attend_status, event, event_category, undated_event, month, year))
-            except:
-                print("Attend Error")
-                continue
 
         # Process registration data and insert to database
-        registered = event_sheet[['Registered', 'Major.1', 'Classification.1']]
+        registered = event_sheet[['Attended', 'Major', 'Classification']]
         registered = registered.dropna()
-        registered['Registered'] = registered['Registered'].replace("Yes", 1)
-        registered['Registered'] = registered['Registered'].replace("No", 0)
 
         # Cycle through entries for registration data
         for i in range(len(registered)):
             try:
-                major = registered['Major.1'][i]
-                classification = get_class_year(semester, registered['Classification.1'][i])
-                classification_category = registered['Classification.1'][i][0:2]
-                register_status = int(registered['Registered'][i])
+                major = registered['Major'][i]
+                classification = get_class_year(semester, registered['Classification'][i])
+                classification_category = registered['Classification'][i][0:2]
+                attend_status = int(registered['Attended'][i])
 
                 # Insert into database
-                cur.execute("INSERT INTO registration_data (semester, major, classificationYear, classificationCategory, registered, event, eventCategory, undatedEvent, month, year) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-                         , (semester, major, classification, classification_category, register_status, event, event_category, undated_event, month, year))
+                cur.execute("INSERT INTO registration_data (semester, major, classificationYear, classificationCategory, attended, event, eventCategory, undatedEvent, month, year) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                         , (semester, major, classification, classification_category, attend_status, event, event_category, undated_event, month, year))
             except:
                 print("Register Error")
+                continue
+
+        # Process attendance data and insert to database
+        attended = event_sheet[['Registered', 'Major.1', 'Classification.1']]
+        attended = attended.dropna()
+        attended['Registered'] = attended['Registered'].replace("Yes", 1)
+        attended['Registered'] = attended['Registered'].replace("No", 0)
+
+        # Cycle through entries for attendance data
+        for i in range(len(attended)):
+            try:
+                major = attended['Major.1'][i]
+                classification = get_class_year(semester, attended['Classification.1'][i])
+                classification_category = attended['Classification.1'][i][0:2]
+                register_status = int(attended['Registered'][i])
+
+                # Insert into database
+                cur.execute("INSERT INTO attendance_data (semester, major, classificationYear, classificationCategory, registered, event, eventCategory, undatedEvent, month, year) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                         , (semester, major, classification, classification_category, register_status, event, event_category, undated_event, month, year))
+            except:
+                print("Attend Error")
                 continue
 
     con.commit()
@@ -126,75 +127,75 @@ def get_data(semester, event, major, classification, data_type):
     # Get data depending on selectbox specifications (parameters)
     if semester == "All Semesters" and event == "All Events" and major == "All Majors" and classification == "All Classes":
         if data_type == "Attendance":
-            cur.execute("SELECT * FROM attendance_data")
-        elif data_type == "Registration":
             cur.execute("SELECT * FROM registration_data")
+        elif data_type == "Registration":
+            cur.execute("SELECT * FROM attendance_data")
 
     elif semester == "All Semesters" and event == "All Events" and classification == "All Classes":
         if data_type == "Attendance":
-            cur.execute("SELECT * FROM attendance_data WHERE major = ?", (major,))
-        elif data_type == "Registration":
             cur.execute("SELECT * FROM registration_data WHERE major = ?", (major,))
+        elif data_type == "Registration":
+            cur.execute("SELECT * FROM attendance_data WHERE major = ?", (major,))
 
     elif semester == "All Semesters" and event == "All Events" and major == "All Majors":
         if data_type == "Attendance":
-            cur.execute("SELECT * FROM attendance_data WHERE classificationYear = ?", (classification,))
-        elif data_type == "Registration":
             cur.execute("SELECT * FROM registration_data WHERE classificationYear = ?", (classification,))
+        elif data_type == "Registration":
+            cur.execute("SELECT * FROM attendance_data WHERE classificationYear = ?", (classification,))
         
     elif semester == "All Semesters" and event == "All Events":
         if data_type == "Attendance":
-            cur.execute("SELECT * FROM attendance_data WHERE major = ? AND classificationYear = ?", (major, classification,))
+            cur.execute("SELECT * FROM registration_data WHERE major = ? AND classificationYear = ?", (major, classification,))
         elif data_type == "Registration":
-            cur.execute("SELECT * FROM registration_data WHERE major = ? classificationYear = ?", (major, classification,))
+            cur.execute("SELECT * FROM attendance_data WHERE major = ? classificationYear = ?", (major, classification,))
 
     elif event == "All Events" and major == "All Majors" and classification == "All Classes":
         if data_type == "Attendance":
-            cur.execute("SELECT * FROM attendance_data WHERE semester = ?", (semester,))
+            cur.execute("SELECT * FROM registration_data WHERE semester = ?", (semester,))
         elif data_type == "Registration":
-            cur.execute("SELECT * FROM registration_data WHERE semester = ?", (semester))
+            cur.execute("SELECT * FROM attendance_data WHERE semester = ?", (semester))
 
     elif event == "All Events" and major == "All Majors":
         if data_type == "Attendance":
-            cur.execute("SELECT * FROM attendance_data WHERE semester = ? AND classificationYear = ?", (semester, classification,))
-        elif data_type == "Registration":
             cur.execute("SELECT * FROM registration_data WHERE semester = ? AND classificationYear = ?", (semester, classification,))
+        elif data_type == "Registration":
+            cur.execute("SELECT * FROM attendance_data WHERE semester = ? AND classificationYear = ?", (semester, classification,))
 
     elif event == "All Events" and classification == "All Classes":
         if data_type == "Attendance":
-            cur.execute("SELECT * FROM attendance_data WHERE semester = ? AND major = ?", (semester, major,))
-        elif data_type == "Registration":
             cur.execute("SELECT * FROM registration_data WHERE semester = ? AND major = ?", (semester, major,))
+        elif data_type == "Registration":
+            cur.execute("SELECT * FROM attendance_data WHERE semester = ? AND major = ?", (semester, major,))
 
     elif event == "All Events":
         if data_type == "Attendance":
-            cur.execute("SELECT * FROM attendance_data WHERE semester = ? AND major = ? AND classificationYear = ?", (semester, major, classification,))
-        elif data_type == "Registration":
             cur.execute("SELECT * FROM registration_data WHERE semester = ? AND major = ? AND classificationYear = ?", (semester, major, classification,))
+        elif data_type == "Registration":
+            cur.execute("SELECT * FROM attendance_data WHERE semester = ? AND major = ? AND classificationYear = ?", (semester, major, classification,))
 
     elif major == "All Majors" and classification == "All Classes":
         if data_type == "Attendance":
-            cur.execute("SELECT * FROM attendance_data WHERE semester = ? AND event = ?", (semester, event,))
-        elif data_type == "Registration":
             cur.execute("SELECT * FROM registration_data WHERE semester = ? AND event = ?", (semester, event,))
+        elif data_type == "Registration":
+            cur.execute("SELECT * FROM attendance_data WHERE semester = ? AND event = ?", (semester, event,))
 
     elif major == "All Majors":
         if data_type == "Attendance":
-            cur.execute("SELECT * FROM attendance_data WHERE semester = ? AND event = ? AND classificationYear = ?", (semester, event, classification,))
-        elif data_type == "Registration":
             cur.execute("SELECT * FROM registration_data WHERE semester = ? AND event = ? AND classificationYear = ?", (semester, event, classification,))
+        elif data_type == "Registration":
+            cur.execute("SELECT * FROM attendance_data WHERE semester = ? AND event = ? AND classificationYear = ?", (semester, event, classification,))
         
     elif classification == "All Classes":
         if data_type == "Attendance":
-            cur.execute("SELECT * FROM attendance_data WHERE semester = ? AND event = ? AND major = ?", (semester, event, major,))
-        elif data_type == "Registration":
             cur.execute("SELECT * FROM registration_data WHERE semester = ? AND event = ? AND major = ?", (semester, event, major,))
+        elif data_type == "Registration":
+            cur.execute("SELECT * FROM attendance_data WHERE semester = ? AND event = ? AND major = ?", (semester, event, major,))
    
     else:
         if data_type == "Attendance":
-            cur.execute("SELECT * FROM attendance_data WHERE semester = ? AND event = ? AND major = ? AND classificationYear = ?", (semester, event, major, classification,))
-        elif data_type == "Registration":
             cur.execute("SELECT * FROM registration_data WHERE semester = ? AND event = ? AND major = ? AND classificationYear = ?", (semester, event, major, classification,))
+        elif data_type == "Registration":
+            cur.execute("SELECT * FROM attendance_data WHERE semester = ? AND event = ? AND major = ? AND classificationYear = ?", (semester, event, major, classification,))
    
     results = pd.DataFrame(cur.fetchall())
     con.close()

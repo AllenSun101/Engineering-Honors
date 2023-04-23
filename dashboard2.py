@@ -92,10 +92,12 @@ def app():
     attendance_data = data_management.get_data(st.session_state.Semester, st.session_state.Event, st.session_state.Major, st.session_state.Class, "Attendance")
     print(attendance_data)
 
+    registration_data = data_management.get_data(st.session_state.Semester, st.session_state.Event, st.session_state.Major, st.session_state.Class, "Registration")
+
 
     #------------PLOT DATA HERE------------------
     # WATCH AND HANDLE EMPTY DATASET CASES!!!!!
 
-
+    
 
 

@@ -88,8 +88,15 @@ def app():
         # If default option
         elif option == "Select Option":
             # File Format Instructions
-            st.write("File format Guidelines")
-            st.write("Format files with like the example below:")
-            # TODO: Example File Download
-            
+            st.write("File Formatting:")
+            st.write("Format files with like the example files in the 'data' folder.")
+            st.write("Sheetnames should be in the format: 'm.dd.yyyy (event_name)'")
+            st.write("For each sheet, column whitespace does not matter, but ordering and names should follow the same format.")
+            st.write("Add all data files to the 'data' folder.")
     
+
+# FR-change on plot
+# Plot textsize
+# Aggregation Table- SQL commands after inserting data
+# Submit Form Handling
+# No data bug
