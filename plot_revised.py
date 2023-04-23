@@ -60,20 +60,21 @@ def quickSort(frequencies, keys, low, high):
 def get_frequency(data, x = 'event'):
     colname = ''
     if (x.lower() == 'major'):
-        colname = 'Major'
+        colname = 'major'
     elif (x.lower() == 'class'):
-        colname = 'Classification'
+        colname = 'classification_category'
     elif (x.lower() == 'semester'):
-        colname = 'Semester'
+        colname = 'semester'
     elif (x.lower() == 'event'):
-        colname = 'Event'
+        colname = 'undated_event'
 
     data_cols = data[colname].tolist()
     data_cols_unique = list(set(data_cols))
     freq = {key: 0 for key in data_cols_unique}
     for col in freq:
         filtered = data.loc[data[colname] == col]
-        cols_freq = filtered['Attended'].sum()
+        #cols_freq = filtered['Attended'].sum()
+        cols_freq = len(filtered)
         freq[col] += cols_freq
     
     return freq
@@ -95,7 +96,7 @@ def plot(freq_dict, title, x_lab, asc = False):
         x.reverse()
 
     # Create axis
-    fig, axs = plt.subplots(nrows = 1, ncols = 2, figsize = (15,4))
+    fig, axs = plt.subplots(nrows = 2, ncols = 1, figsize = (20,20))
     
     # Bar chart
     # make plot
@@ -105,6 +106,7 @@ def plot(freq_dict, title, x_lab, asc = False):
     axs[0].set_title(title)
     axs[0].set_xlabel(x_lab) 
     axs[0].set_ylabel('Attendence')
+    axs[0].set_xticks(x, x, rotation=45)
 
     # Pie chart
     pie_dict = {}
@@ -112,6 +114,7 @@ def plot(freq_dict, title, x_lab, asc = False):
         if freq_dict[key] != 0:
             pie_dict[key] = freq_dict[key]
     axs[1].pie(pie_dict.values(), labels = pie_dict.keys())
+
 
     plt.tight_layout()
     st.pyplot(fig)
