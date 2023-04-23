@@ -3,17 +3,15 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import data_management
 
-# Need to fix initialize bug
-st.session_state.Semester = "All Semesters"
-st.session_state.Event = "All Events"
-st.session_state.Major = "All Majors"
-st.session_state.Class = "All Classes"
-
-st.session_state.PrevAllSemesters = True
-
-# re_initialize
 
 def app():
+    
+    # Check if session state exists
+    if "Semester" not in st.session_state:
+        st.session_state.Semester = "All Semesters"
+        st.session_state.Event = "All Events"
+        st.session_state.Major = "All Majors"
+        st.session_state.Class = "All Classes"
 
     # Options Storage
     semesters = ["All Semesters"]
@@ -73,7 +71,7 @@ def app():
     st.session_state.Major = st.session_state.Major
     
     
-    class_years.extend(pd.unique(major_class_attendance_data['classification']))
+    class_years.extend(pd.unique(major_class_attendance_data['classification_year']))
     st.session_state.Class = st.session_state.Class
 
 

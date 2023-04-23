@@ -15,6 +15,13 @@ st.session_state.PrevAllSemesters = True
 
 def app():
 
+    # Check if session state exists
+    if "Semester" not in st.session_state:
+        st.session_state.Semester = "All Semesters"
+        st.session_state.Event = "All Events"
+        st.session_state.Major = "All Majors"
+        st.session_state.Class = "All Classes"
+
     # Options Storage
     semesters = ["All Semesters"]
     events = ["All Events"]
@@ -26,7 +33,7 @@ def app():
     # Create Columns for the widgets
     col1, col2, col3, col4 = st.columns(4)
 
-    # Handle Updated Values
+    # Handle Updated Session Values
     # Moving between semesters
     if st.session_state.Semester != "All Semesters":
         data = data_management.get_data(st.session_state.Semester, "All Events", "All Majors", "All Classes", "Attendance")
@@ -60,23 +67,24 @@ def app():
     # selectbox options never change
     semester_attendance_data = data_management.get_data("All Semesters", "All Events", "All Majors", "All Classes", "Attendance")
     semesters.extend(pd.unique(semester_attendance_data['semester']))
+    
     # selectbox based on semester
     event_attendance_data = data_management.get_data(st.session_state.Semester, "All Events", "All Majors", "All Classes", "Attendance")
     events.extend(pd.unique(event_attendance_data['event']))
     st.session_state.Event = st.session_state.Event
 
-    # selectbox based on semester and event 
+    # selectboxes based on semester and event 
     major_class_attendance_data = data_management.get_data(st.session_state.Semester, st.session_state.Event, "All Majors", "All Classes", "Attendance")
     majors.extend(pd.unique(major_class_attendance_data['major']))
     if st.session_state.Major not in majors:
         st.session_state.Major = "All Majors"
     st.session_state.Major = st.session_state.Major
     
-    
-    class_years.extend(pd.unique(major_class_attendance_data['classification']))
+    class_years.extend(pd.unique(major_class_attendance_data['classification_year']))
     st.session_state.Class = st.session_state.Class
 
 
+    # Display selectboxes
     selected_semester = col1.selectbox(label="Filter by Semester", options=semesters, key="Semester")
     print(st.session_state.Semester)
 
