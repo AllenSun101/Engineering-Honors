@@ -20,7 +20,7 @@ def app():
     classificationCategory = class_dict[classificationCategory]
 
     predictions = model_deploy.classification_predict(month, year, major, classificationCategory, eventCategory)
-    st.write("The estimated attendance probability is calculated below: ")
+    st.write("### The estimated attendance probability is calculated below: ")
     st.write(f"From KNN model: {round(predictions['knn'],2)}")
     st.write(f"From random forest model: {round(predictions['random forest'],2)}")
     st.write(f"From SVM model: {round(predictions['svm'],2)}")

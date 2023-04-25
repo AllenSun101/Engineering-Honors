@@ -30,7 +30,6 @@ class MultiPage:
         # Dropdown to select the page to run  
         st.sidebar.image('Logo.png', width=200)
         st.sidebar.title("Engineering Honors Activities")
-        st.sidebar.write("### Select your dashboard")
         page = st.sidebar.selectbox(
             'Dashboard:', 
             self.pages, 

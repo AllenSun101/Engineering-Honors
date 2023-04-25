@@ -9,7 +9,7 @@ st.session_state.Semester = "All Semesters"
 st.session_state.Event = "All Events"
 st.session_state.Major = "All Majors"
 st.session_state.Class = "All Classes"
-st.session_state.X_axis = "Event"
+st.session_state.X_axis = "Semester"
 
 
 st.session_state.PrevAllSemesters = True
@@ -103,8 +103,11 @@ def app():
     #------------PLOT DATA HERE------------------
     # WATCH AND HANDLE EMPTY DATASET CASES!!!!!
 
-    freq_dict = plot_revised.get_frequency(attendance_data, x_axis)
-    plot_revised.plot(freq_dict, "Attendance By " + x_axis, x_axis, False)
+    if attendance_data.empty:
+        st.write("### Empty set of data")
+    else:
+        freq_dict = plot_revised.get_frequency(attendance_data, x_axis)
+        plot_revised.plot(freq_dict, "Attendance By " + x_axis, x_axis, False)
 
 
 

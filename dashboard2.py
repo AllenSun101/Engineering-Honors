@@ -89,17 +89,21 @@ def app():
     print(attendance_data)
 
     registration_data = data_management.get_data(st.session_state.Semester, st.session_state.Event, st.session_state.Major, st.session_state.Class, "Registration")
-
+    print(registration_data)
 
     #------------PLOT DATA HERE------------------
     # WATCH AND HANDLE EMPTY DATASET CASES!!!!!
 
-    x_lab = x_axis
-    title1 = "Attendance and Registration by " + x_axis
-    title2 = "Turnout Percentage by " + x_axis
-    att_freq_dict_old = plot_revised.get_frequency(attendance_data, x_axis)
-    reg_freq_dict_old = plot_revised.get_frequency(registration_data, x_axis)
+    # Maybe add special case if one is empty and the other is not (set empty columns to zero frequency)
+    if attendance_data.empty or registration_data.empty:
+        st.write("### Empty set of data")
+    else:
+        x_lab = x_axis
+        title1 = "Attendance and Registration by " + x_axis
+        title2 = "Turnout Percentage by " + x_axis
+        att_freq_dict_old = plot_revised.get_frequency(attendance_data, x_axis)
+        reg_freq_dict_old = plot_revised.get_frequency(registration_data, x_axis)
 
 
-    plot_turnout.plot(att_freq_dict_old, reg_freq_dict_old, x_axis, x_lab, title1, title2)
+        plot_turnout.plot(att_freq_dict_old, reg_freq_dict_old, x_axis, x_lab, title1, title2)
 

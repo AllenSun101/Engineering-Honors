@@ -15,10 +15,11 @@ app = MultiPage()
 # Title of the main page
 st.set_page_config(layout="wide")
 app.add_page("Main", dasbhoard1_app)
-app.add_page("Alternative", dashboard2_app)
-app.add_page("New Main", dashboard1_new_app)
-app.add_page("Manage Data", manage_data)
+app.add_page("Attendance Analytics", dashboard1_new_app)
+app.add_page("Turnout Rates", dashboard2_app)
 app.add_page("Machine Learning", machine_learning)
+app.add_page("Manage Data", manage_data)
+
 # add page for data insertion/manipulation
 
 # The main app
