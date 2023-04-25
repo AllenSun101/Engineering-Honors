@@ -46,10 +46,6 @@ def app():
         st.session_state.Major = "All Majors"
         st.session_state.Class = "All Classes"
 
-    st.write(st.session_state.Semester)
-    st.write(st.session_state.Event)
-    st.write(st.session_state.Major)
-    st.write(st.session_state.Class)
 
     if st.session_state.Semester == "All Semesters" and st.session_state.Event == "All Events":
         st.session_state.PrevAllSemesters = True
@@ -78,16 +74,12 @@ def app():
 
 
     selected_semester = col1.selectbox(label="Filter by Semester", options=semesters, key="Semester")
-    print(st.session_state.Semester)
 
     selected_event = col2.selectbox(label="Filter by Event", options=events, key="Event")
-    print(st.session_state.Event)
 
     selected_major = col3.selectbox(label="Filter by Major", options=majors, key="Major")
-    print(st.session_state.Major)
 
     selected_year = col4.selectbox(label="Filter by Class", options=class_years, key="Class")
-    print(st.session_state.Class)
 
     x_axis = col1.selectbox(label="X Axis", options=['Semester', 'Event', 'Major', 'Class'], key="X_axis")
 

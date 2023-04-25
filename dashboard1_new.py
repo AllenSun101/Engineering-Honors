@@ -92,7 +92,7 @@ def app():
 
     selected_year = col4.selectbox(label="Filter by Class", options=class_years, key="Class")
 
-    x_axis = col4.selectbox(label="X Axis", options=['Semester', 'Event', 'Major', 'Class'], key="X_axis")
+    x_axis = col1.selectbox(label="X Axis", options=['Semester', 'Event', 'Major', 'Class'], key="X_axis")
 
 
     # Query database based on session states
