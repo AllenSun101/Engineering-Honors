@@ -147,13 +147,13 @@ def get_data(semester, event, major, classification, data_type):
         if data_type == "Attendance":
             cur.execute("SELECT * FROM registration_data WHERE major = ? AND classificationYear = ?", (major, classification,))
         elif data_type == "Registration":
-            cur.execute("SELECT * FROM attendance_data WHERE major = ? classificationYear = ?", (major, classification,))
+            cur.execute("SELECT * FROM attendance_data WHERE major = ? AND classificationYear = ?", (major, classification,))
 
     elif event == "All Events" and major == "All Majors" and classification == "All Classes":
         if data_type == "Attendance":
             cur.execute("SELECT * FROM registration_data WHERE semester = ?", (semester,))
         elif data_type == "Registration":
-            cur.execute("SELECT * FROM attendance_data WHERE semester = ?", (semester))
+            cur.execute("SELECT * FROM attendance_data WHERE semester = ?", (semester,))
 
     elif event == "All Events" and major == "All Majors":
         if data_type == "Attendance":

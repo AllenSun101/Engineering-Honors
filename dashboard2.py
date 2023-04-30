@@ -21,7 +21,7 @@ def app():
     majors = ["All Majors"]
     class_years = ["All Classes"]
     
-    st.markdown("## Engineering Honors Main")
+    st.markdown("## Turnout Analysis")
 
     # Create Columns for the widgets
     col1, col2, col3, col4 = st.columns(4)
@@ -36,7 +36,12 @@ def app():
                 st.session_state.Major = "All Majors"
                 st.session_state.Class = "All Classes"
             st.session_state.Event = "All Events"
-            
+        major_class_attendance_data = data_management.get_data(st.session_state.Semester, st.session_state.Event, "All Majors", "All Classes", "Attendance")
+        if st.session_state.Major not in pd.unique(major_class_attendance_data['major']):
+            st.session_state.Major = "All Majors"
+        if st.session_state.Class not in pd.unique(major_class_attendance_data['classification_year']):
+            st.session_state.Class = "All Classes"
+
 
     elif st.session_state.Event != "All Events":
         if st.session_state.PrevAllSemesters:

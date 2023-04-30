@@ -97,6 +97,5 @@ def app():
 
 # FR-change on plot
 # Plot textsize
-# Aggregation Table- SQL commands after inserting data
 # Submit Form Handling
-# No data bug
+# Text bug
