@@ -95,7 +95,6 @@ def app():
             st.write("Add all data files to the 'data' folder.")
     
 
-# FR-change on plot
 # Plot textsize
 # Submit Form Handling
 # Text bug

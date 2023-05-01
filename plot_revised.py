@@ -106,7 +106,7 @@ def plot(freq_dict, title, x_lab, asc = False):
     axs[0].set_title(title)
     axs[0].set_xlabel(x_lab) 
     axs[0].set_ylabel('Attendence')
-    axs[0].set_xticks(x, x, rotation=45)
+    axs[0].set_xticks(x, x, rotation=45, ha='right')
 
     # Pie chart
     pie_dict = {}
