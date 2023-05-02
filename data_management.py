@@ -102,7 +102,7 @@ def add_data(file_name, semester, event_categories):
                 cur.execute("INSERT INTO attendance_data (semester, major, classificationYear, classificationCategory, registered, event, eventCategory, undatedEvent, month, year) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
                          , (semester, major, classification, classification_category, register_status, event, event_category, undated_event, month, year))
             except:
-                print("Attend Error")
+                #print("Attend Error")
                 continue
 
     con.commit()

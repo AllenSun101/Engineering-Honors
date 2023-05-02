@@ -4,23 +4,28 @@ import data_management
 import sqlite3
  
 st.session_state.file_submit = False
-st.session_state.reset = True
+st.session_state.category_submit = False
+st.session_state.Option = "Select Option"
 
 def app():
     st.markdown("## Add and Delete Data")
     col1, col2 = st.columns([6, 4])
-    
+
     with col1:
         # Selectbox of user options 
-        option = st.selectbox(label="Select a Command", options=["Select Option", "Add Data", "Delete Data"])
+        if st.session_state.category_submit:
+            st.session_state.Option = "Select Option"
+            st.write("Successfully submitted!")
+            st.session_state.file_submit = False
+            st.session_state.category_submit = False
+
+        option = st.selectbox(label="Select a Command", options=["Select Option", "Add Data", "Delete Data"], key="Option")
 
         if option == "Add Data":
             # Create form for uploading files 
             with st.form("data form"):
                 file = st.text_input(label="Enter the name of the file you would like to add or delete")
                 semester = st.text_input(label="Enter the semester of the spreadsheet")
-                if st.session_state.reset:
-                    change_key = True
                 st.write("File example: Spring 2022 Event Info (Data Project).xlsx")
                 st.write("Note: Semester should be in the format 'Season Year'. For example: Fall 2022")
                 submit = st.form_submit_button("Submit")
@@ -28,7 +33,6 @@ def app():
                 # If submit button pressed
                 if submit:
                     st.session_state.file_submit = True
-                    print("submitted")
 
             # If first submit button pressed 
             if st.session_state.file_submit:
@@ -46,15 +50,8 @@ def app():
                             st.write(event)
                             selectbox = st.selectbox(label="Select category", options=["Research and Development", "Service", "Community Building", "Professional Development"], key=event)
                             categories.append(selectbox)
-                        second_submit = st.form_submit_button("Submit Categorizations")
-                        
-                        # TODO- handle second submit
-                        if second_submit:
-                            st.write("submitted again")
-                            print(categories)
-                            data_management.add_data(file, semester, categories)
-                            # data_management.add_data("Spring 2022 Event Info (Data Project).xlsx", Spring 2022)
-                            st.session_state.file_submit = False
+                        # Callback function when categories are submitted
+                        second_submit = st.form_submit_button("Submit Categorizations", on_click=category_submit, args=(file, semester, categories,))
                 except:
                     st.write("Could not load the file. Please ensure the file name and data formatting is correct")
 
@@ -93,8 +90,8 @@ def app():
             st.write("Sheetnames should be in the format: 'm.dd.yyyy (event_name)'")
             st.write("For each sheet, column whitespace does not matter, but ordering and names should follow the same format.")
             st.write("Add all data files to the 'data' folder.")
-    
 
-# Plot textsize
-# Submit Form Handling
-# Text bug
+
+def category_submit(file, semester, categories):
+    data_management.add_data(file, semester, categories)
+    st.session_state.category_submit = True
