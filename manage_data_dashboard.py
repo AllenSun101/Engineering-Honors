@@ -88,8 +88,12 @@ def app():
             st.write("File Formatting:")
             st.write("Format files with like the example files in the 'data' folder.")
             st.write("Sheetnames should be in the format: 'm.dd.yyyy (event_name)'")
-            st.write("For each sheet, column whitespace does not matter, but ordering and names should follow the same format.")
+            st.write("For each sheet, column position does not matter, but ordering and names should follow the same format.")
             st.write("Add all data files to the 'data' folder.")
+
+            st.write("Example File Below for Reference:")
+            with open('data/Spring 2022 Event Info (Data Project).xlsx', 'rb') as my_file:
+                st.download_button(label = 'Download', data = my_file, file_name = 'Example_File.xlsx', mime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')  
 
 
 def category_submit(file, semester, categories):

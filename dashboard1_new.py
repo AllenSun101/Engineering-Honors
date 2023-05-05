@@ -102,7 +102,7 @@ def app():
 
     # Query database based on session states
     attendance_data = data_management.get_data(st.session_state.Semester, st.session_state.Event, st.session_state.Major, st.session_state.Class, "Attendance")
-    print(attendance_data)
+    # print(attendance_data)
 
 
     #------------PLOT DATA HERE------------------

@@ -81,7 +81,7 @@ def add_data(file_name, semester, event_categories):
                 cur.execute("INSERT INTO registration_data (semester, major, classificationYear, classificationCategory, attended, event, eventCategory, undatedEvent, month, year) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
                          , (semester, major, classification, classification_category, attend_status, event, event_category, undated_event, month, year))
             except:
-                print("Register Error")
+                # print("Register Error")
                 continue
 
         # Process attendance data and insert to database

@@ -86,8 +86,8 @@ def plot(att_freq_dict_old, reg_freq_dict_old, x_axis, x_lab, title1, title2):
         else:
             reg_freq_dict[x] = 0
     
-    print(len(all_x_vals))
-    print(len(att_freq_dict))
+    # print(len(all_x_vals))
+    # print(len(att_freq_dict))
     
     indices = np.arange(len(all_x_vals))
     
